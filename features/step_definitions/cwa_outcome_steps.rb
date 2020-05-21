@@ -195,7 +195,7 @@ Then('the outcome does not save and gives an error') do
   expect(page).to have_content('The Category of Law, Procurement Area and Access Point combination that has been used is not valid for the date that has been recorded.')
 end
 
-When ('user adds an outcome for Immigration with {string}, {string}, {string}, {string}, {string}, {string} and {string}') \
+When (/user adds an outcome for (?:Asylum|Immigration) with "(.*)", "(.*)", "(.*)", "(.*)", "(.*)", "(.*)" and "(.*)"/) \
 do |case_id, matter_type, exemption_criteria_satisfied, ecf_ref, case_start_date, pa, ap|
   submission_list_page = SubmissionListPage.new
   submission_list_page.add_outcome_button.click
