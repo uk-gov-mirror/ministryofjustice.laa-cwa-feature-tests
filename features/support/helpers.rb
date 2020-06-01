@@ -94,12 +94,16 @@ module Helpers
                   value = new_line[field.downcase.to_sym]
                   value = new_line[:case_id] if field == 'CASE_ID' && value.nil?
                   if field == 'UCN' && value.nil?
-                    client_dob = new_line[:client_date_of_birth] || submission.lines.find { |d| d.name == 'CLIENT_DATE_OF_BIRTH' }&.default_value
+                    client_dob = if new_line[:client_date_of_birth] && new_line[:client_date_of_birth] != '<default>'
+                      new_line[:client_date_of_birth]
+                    else
+                      submission.lines.find { |d| d.name == 'CLIENT_DATE_OF_BIRTH' }&.default_value
+                    end
                     client_forename = new_line[:client_forename] || submission.lines.find { |d| d.name == 'CLIENT_FORENAME' }&.default_value
                     client_surname = new_line[:client_surname] || submission.lines.find { |d| d.name == 'CLIENT_SURNAME' }&.default_value
                     value = "#{client_dob.tr('/', '')}/#{client_forename[0].upcase}/#{client_surname[0..3].upcase}"
                   end
-                  value = default_line&.default_value if value.nil?
+                  value = default_line&.default_value if value.nil? || value == '<default>'
                   value = "#{value} #{new_line[:case_id]}" if field == 'CLIENT_SURNAME'
                   value = "#{new_line[:client_date_of_birth].tr('/', '')}/#{new_line[:client_surname]}" if field == 'UCN' && value.nil?
                   value = nil if value == '<blank>'
